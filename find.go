@@ -21,7 +21,6 @@ type SearchWorkList struct {
 	Results *chan Result
 }
 
-//
 // type Results interface {
 // 	Get() ([]Result, error)
 // }

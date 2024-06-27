@@ -1,4 +1,4 @@
-package main
+package dowork
 
 import (
 	"sync"

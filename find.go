@@ -22,9 +22,9 @@ type SearchWorkList struct {
 }
 
 type FileContentResult struct {
-	path string
-	line int
-	text string
+	Path string
+	Line int
+	Text string
 }
 
 func (r *FileContentResult) unwrap() (Result, error) {
@@ -32,7 +32,7 @@ func (r *FileContentResult) unwrap() (Result, error) {
 }
 
 func NewFilecontentResult(text string, line int, path string) *FileContentResult {
-	return &FileContentResult{text: text, line: line, path: path}
+	return &FileContentResult{Text: text, Line: line, Path: path}
 }
 
 type SearchFileContentJob struct {
@@ -61,7 +61,7 @@ func (job *SearchFileContentJob) Do() error {
 	defer func(file *os.File) {
 		closErr := file.Close()
 		if closErr != nil {
-			log.Errorf("Error closing file %s: %v\n", job.path, closErr)
+			log.Errorf("Error closing file %s: %v\n", job.Path, closErr)
 		}
 	}(file)
 
@@ -69,7 +69,7 @@ func (job *SearchFileContentJob) Do() error {
 	lineNum := 1
 	for scanner.Scan() {
 		if strings.Contains(scanner.Text(), job.find) {
-			result := NewFilecontentResult(scanner.Text(), lineNum, job.path)
+			result := NewFilecontentResult(scanner.Text(), lineNum, job.Path)
 			job.results <- result
 		}
 		lineNum++

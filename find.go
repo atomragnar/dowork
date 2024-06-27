@@ -61,7 +61,7 @@ func (job *SearchFileContentJob) Do() error {
 	defer func(file *os.File) {
 		closErr := file.Close()
 		if closErr != nil {
-			log.Errorf("Error closing file %s: %v\n", job.Path, closErr)
+			log.Errorf("Error closing file %s: %v\n", job.path, closErr)
 		}
 	}(file)
 
@@ -69,7 +69,7 @@ func (job *SearchFileContentJob) Do() error {
 	lineNum := 1
 	for scanner.Scan() {
 		if strings.Contains(scanner.Text(), job.find) {
-			result := NewFilecontentResult(scanner.Text(), lineNum, job.Path)
+			result := NewFilecontentResult(scanner.Text(), lineNum, job.path)
 			job.results <- result
 		}
 		lineNum++

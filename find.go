@@ -82,14 +82,14 @@ func (job *SearchFileContentJob) Do() error {
 	return nil
 }
 
-func numberOfFilesInDir(path string) int {
-	entries, err := os.ReadDir(path)
-	if err != nil {
-		fmt.Println("ReadDir error:", err)
-		return 0
-	}
-	return len(entries)
-}
+// func numberOfFilesInDir(path string) int {
+// 	entries, err := os.ReadDir(path)
+// 	if err != nil {
+// 		fmt.Println("ReadDir error:", err)
+// 		return 0
+// 	}
+// 	return len(entries)
+// }
 
 func numberOfFilesInDirRecursive(path string) int {
 	entries, err := os.ReadDir(path)

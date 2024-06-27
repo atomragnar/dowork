@@ -16,7 +16,10 @@ before:
     - go mod tidy
 
 git:
-    tag_sort: -version:refname
+  tag_sort: -version:refname
+
+builds:
+  - skip: true
 
 changelog:
   sort: asc

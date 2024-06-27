@@ -1,4 +1,4 @@
-module github.com/atomrangar/dowork
+module github.com/atomragnar/dowork
 
 go 1.22.0
 

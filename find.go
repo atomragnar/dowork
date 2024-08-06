@@ -3,13 +3,10 @@ package dowork
 import (
 	"bufio"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"sync"
-
-	"github.com/charmbracelet/log"
 )
 
 type Result interface {
@@ -49,19 +46,19 @@ func newFileContentSearch(path, find string, results chan<- Result) *SearchFileC
 func (job *SearchFileContentJob) Do() error {
 	file, err := os.Open(job.path)
 	if err != nil {
-		log.Printf("Error opening file %s: %v\n", job.path, err)
 		return err
 	}
 	defer func() {
 		if r := recover(); r != nil {
-			log.Printf("Recovered in Do: %v", r)
+			panic(r)
 		}
 	}()
 
 	defer func(file *os.File) {
 		closErr := file.Close()
 		if closErr != nil {
-			log.Errorf("Error closing file %s: %v\n", job.path, closErr)
+			// log.Errorf("Error closing file %s: %v\n", job.path, closErr)
+			panic(closErr)
 		}
 	}(file)
 
@@ -89,7 +86,7 @@ func (job *SearchFileContentJob) Do() error {
 func numberOfFilesInDirRecursive(path string) int {
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		fmt.Println("ReadDir error:", err)
+		// fmt.Println("ReadDir error:", err)
 		return 0
 	}
 	count := 0
@@ -116,7 +113,7 @@ func addFileEntryToJob(entry os.DirEntry, wl *WorkList, results chan<- Result, p
 func discoverFileContentSearchDirs(wl *WorkList, path string, find string, results chan<- Result) {
 	entries, err := os.ReadDir(path)
 	if err != nil {
-		fmt.Println("ReadDir error:", err)
+		// fmt.Println("ReadDir error:", err)
 		return
 	}
 	for _, entry := range entries {
@@ -129,8 +126,6 @@ func SearchFileContent(searchTerm, searchDir string) <-chan Result {
 
 	numWorkers := numberOfFilesInDirRecursive(searchDir)
 
-	log.Info("Number of files to search:", numWorkers)
-
 	results := make(chan Result, numWorkers) // Adjust buffer size as necessary
 	wl := NewWorkList(numWorkers)
 
@@ -141,9 +136,10 @@ func SearchFileContent(searchTerm, searchDir string) <-chan Result {
 			var jobsDoneErr *WorkIsDoneError
 			if errors.As(err, &jobsDoneErr) {
 				return // work is done
-			} else if err != nil {
-				log.Errorf("Error processing job: %v", err)
 			}
+			// } else if err != nil {
+			// 	log.Errorf("Error processing job: %v", err)
+			// }
 		}
 	}
 
